@@ -11,7 +11,13 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "test": "tsx tests/smoke.test.ts",
-    "server": "tsx server.ts"
+    "server": "tsx server.ts",
+    "clean": "powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Remove-Item -Recurse -Force .\\\\node_modules; Remove-Item -Recurse -Force .\\\\.next; Remove-Item -Recurse -Force .\\\\prisma\\\\client; npm ci\"",
+    "postinstall": "prisma generate",
+    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
+    "upgrade": "npm install -g npm-check-updates && ncu -u && npm install"
+  },
+
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
@@ -35,7 +41,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20.16.5",
-    "@types/react": "^18.3.8",
+    "@types/react": "18.3.31",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",

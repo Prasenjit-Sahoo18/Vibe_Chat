@@ -54,7 +54,7 @@
 | **Frontend** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Lucide Icons |
 | **Animation & Charts** | CSS Transitions, Framer Motion, Recharts |
 | **Backend** | Next.js API Routes, Custom Node HTTP Server, Socket.IO |
-| **Database & ORM** | PostgreSQL / SQLite (zero-config dev), Prisma ORM |
+| **Database & ORM** | PostgreSQL, Prisma ORM |
 | **Authentication** | JWT, bcryptjs password hashing, HTTP-Only cookies, Zod validation |
 | **Payments** | Payment Service Abstraction (Razorpay / Stripe / Mock Sandbox) |
 | **Storage** | Cloudinary / AWS S3 storage adapter with Base64/Data-URI fallback |
@@ -118,9 +118,9 @@ Copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-Default local `.env` values work out-of-the-box with SQLite:
+For local development, use a PostgreSQL database (Render supplies this automatically in production):
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public"
 AUTH_SECRET="vibechat_super_secure_jwt_secret_key_2025_999!"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_SOCKET_URL="http://localhost:3000"
