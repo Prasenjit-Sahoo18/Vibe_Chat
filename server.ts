@@ -79,8 +79,8 @@ async function startServer() {
     });
   });
 
-  server.listen(PORT, () => {
-    console.log(`> VibeChat ready on http://localhost:${PORT}`);
+  server.listen(PORT, "0.0.0.0", () => {
+    console.log(`> VibeChat ready on http://0.0.0.0:${PORT}`);
     console.log(`> Socket.IO active on port ${PORT}`);
   });
 }

@@ -7,19 +7,18 @@ services:
   # Main Full-Stack Web Service (Next.js + Socket.IO)
   - type: web
     name: vibechat
-    env: node
     runtime: node
     plan: free
     region: oregon
-    buildCommand: npm install && npm run build
-    startCommand: npm run server
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: node scripts/prepare-db.js && npm run server
     autoDeploy: true
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 3000
+      - key: NODE_OPTIONS
+        value: "--max-old-space-size=450"
       - key: AUTH_SECRET
         generateValue: true
       - key: DATABASE_URL
