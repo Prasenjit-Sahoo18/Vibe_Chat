@@ -6,6 +6,7 @@ import { Avatar } from "../common/Avatar";
 import { MessageItem } from "./MessageItem";
 import { ChatComposer } from "./ChatComposer";
 import { MediaViewer } from "./MediaViewer";
+import { CallModal } from "./CallModal";
 import {
   Phone,
   Video,
@@ -45,6 +46,7 @@ export function ChatWindow({
   } | null>(null);
   const [showDetailsDrawer, setShowDetailsDrawer] = useState(false);
   const [callNotice, setCallNotice] = useState<string | null>(null);
+  const [activeCall, setActiveCall] = useState<{ isVideo: boolean } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -237,6 +239,18 @@ export function ChatWindow({
     }
   };
 
+  const handlePaymentSuccess = (payment: any, paymentMsg: any) => {
+    if (paymentMsg) {
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === paymentMsg.id)) return prev;
+        return [...prev, paymentMsg];
+      });
+      broadcastMessage(conversation.id, paymentMsg);
+      scrollToBottom();
+      if (onRefreshConversations) onRefreshConversations();
+    }
+  };
+
   return (
     <div className="flex flex-1 h-full overflow-hidden bg-slate-950/40 relative">
       <div className="flex flex-col flex-1 h-full min-w-0">
@@ -280,23 +294,17 @@ export function ChatWindow({
           {/* Action icons */}
           <div className="flex items-center gap-1">
             <button
-              onClick={() => {
-                setCallNotice("Voice call initiated. Connecting encrypted peer line...");
-                setTimeout(() => setCallNotice(null), 4000);
-              }}
+              onClick={() => setActiveCall({ isVideo: false })}
               title="Voice Call"
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"
+              className="p-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-xl transition-colors"
             >
               <Phone className="w-4 h-4" />
             </button>
 
             <button
-              onClick={() => {
-                setCallNotice("Starting HD Video Call room...");
-                setTimeout(() => setCallNotice(null), 4000);
-              }}
+              onClick={() => setActiveCall({ isVideo: true })}
               title="Video Call"
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"
+              className="p-2 text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-xl transition-colors"
             >
               <Video className="w-4 h-4" />
             </button>
@@ -363,6 +371,7 @@ export function ChatWindow({
           onTyping={(typing) => sendTyping(conversation.id, typing)}
           replyToMessage={replyMessage}
           onCancelReply={() => setReplyMessage(null)}
+          onPaymentSuccess={handlePaymentSuccess}
         />
       </div>
 
@@ -426,6 +435,32 @@ export function ChatWindow({
           mediaType={activeMedia.type}
           fileName={activeMedia.fileName}
           onClose={() => setActiveMedia(null)}
+        />
+      )}
+
+      {/* Voice & Video Call Modal */}
+      {activeCall && (
+        <CallModal
+          isOpen={!!activeCall}
+          isVideo={activeCall.isVideo}
+          recipient={{
+            name: conversation.title || otherMember?.name || "User",
+            avatarUrl: conversation.avatarUrl || otherMember?.avatarUrl,
+            username: otherMember?.username,
+          }}
+          onClose={(durationSec) => {
+            const wasVideo = activeCall.isVideo;
+            setActiveCall(null);
+            if (durationSec > 0) {
+              const mins = Math.floor(durationSec / 60);
+              const secs = durationSec % 60;
+              const formattedDuration = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+              handleSendMessage({
+                content: `${wasVideo ? "📹 Video" : "📞 Voice"} call ended • ${formattedDuration}`,
+                type: "text",
+              });
+            }
+          }}
         />
       )}
     </div>

@@ -48,9 +48,11 @@ export async function POST(req: NextRequest) {
     }
 
     // If payment was made in an active conversation, post a payment message directly!
-    let paymentMessage = null;
+    const paymentDetails = await PaymentService.getPaymentDetails(result.paymentId);
+    let paymentMessage: any = null;
+
     if (conversationId) {
-      paymentMessage = await prisma.message.create({
+      const createdMessage = await prisma.message.create({
         data: {
           conversationId,
           senderId: user.id,
@@ -59,22 +61,37 @@ export async function POST(req: NextRequest) {
           status: "read",
         },
         include: {
-          sender: { select: { id: true, name: true, username: true } },
+          sender: { select: { id: true, name: true, username: true, avatarUrl: true } },
         },
       });
 
       await prisma.payment.update({
         where: { id: result.paymentId },
-        data: { messageId: paymentMessage.id },
+        data: { messageId: createdMessage.id },
       });
 
       await prisma.conversation.update({
         where: { id: conversationId },
         data: { lastMessageAt: new Date() },
       });
-    }
 
-    const paymentDetails = await PaymentService.getPaymentDetails(result.paymentId);
+      paymentMessage = {
+        ...createdMessage,
+        payment: {
+          id: paymentDetails?.id,
+          amount: paymentDetails?.amount || Number(amount),
+          currency: paymentDetails?.currency || currency,
+          status: paymentDetails?.status || "successful",
+          note: paymentDetails?.note || note,
+          senderId: paymentDetails?.senderId || user.id,
+          receiverId: paymentDetails?.receiverId || receiverId,
+          senderName: user.name,
+          receiverName: paymentDetails?.receiver?.name || "Recipient",
+          receiptNumber: paymentDetails?.receiptNumber || `VB-${Date.now().toString().slice(-6)}`,
+          createdAt: paymentDetails?.createdAt || new Date(),
+        },
+      };
+    }
 
     return NextResponse.json({
       success: true,

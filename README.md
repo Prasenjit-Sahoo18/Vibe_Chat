@@ -1,126 +1,32 @@
 # VibeChat 🚀
 
-**VibeChat** is a production-ready, full-stack real-time social communication and commerce platform. Combining instant messaging, 24-hour ephemeral status stories with soundtrack backing, in-chat peer-to-peer payments, AI copilot intelligence, and rich media collaboration into an original, high-performance web experience.
+**VibeChat** is a production-ready, full-stack real-time social communication and commerce platform. Combining instant messaging, WhatsApp-style voice & video calling, 24-hour music status stories, in-chat peer-to-peer payments, AI copilot intelligence, and rich media collaboration.
 
 ---
 
-## 🎨 Brand & Visual Identity
+## ✨ Key Features
 
-* **Name**: VibeChat
-* **Theme**: Modern, energetic, social, and developer/startup-grade.
-* **Palette**: Electric Indigo (`#6366F1`), Vibrant Violet (`#8B5CF6`), Cyber Cyan (`#06B6D4`), and Deep Obsidian (`#0F172A`).
-* **Design System**: Fully bespoke layouts, glassmorphic floating cards, rounded badges, custom audio visualizer waves, and smooth micro-interactions (no WhatsApp green or clones).
-
----
-
-## ✨ Features
-
-### 1. Real-Time Chat & Collaboration
-* **Zero-Latency WebSocket Engine**: Powered by Socket.IO with automated reconnection and fallback synchronization.
-* **Presence & Indicators**: Real-time online/offline status, "typing..." indicator, and delivery checkmarks (Sent, Delivered, Read double-ticks).
-* **Rich Messaging**: Text, custom stickers, emojis, photos, videos, documents (PDF, Word, Excel, ZIP), and voice notes.
-* **Message Actions**: Inline reply quotes, forward, emoji reactions (`❤️`, `🔥`, `👍`, `😂`, `🚀`, `🎉`), edit, delete, pin, and star.
-* **Group Conversations**: Create multi-user channels, assign admins/members, and customize group icons and descriptions.
-
-### 2. 24-Hour Ephemeral Stories with Music
-* **Soundtracked Status Updates**: Attach royalty-free Lo-Fi, Synthwave, and Acoustic tracks to status updates.
-* **Segmented Story Viewer**: Interactive Instagram/Telegram-style progress bars, touch/click pause, next/prev navigation.
-* **Viewer Analytics & Reactions**: See who viewed your story, react with quick emojis, or send direct replies.
-
-### 3. Peer-to-Peer Payments & Commerce
-* **In-Chat Payment Cards**: Send funds directly from the message composer with custom amounts and transaction notes.
-* **Receipts & Ledger**: Automatic transaction receipts, unique receipt numbers (`VB-XXXXXX`), and wallet balance tracking.
-* **Gateway Abstraction**: Designed for Razorpay (UPI & Netbanking) and Stripe with a built-in sandbox mock engine.
-
-### 4. VibeChat AI Assistant
-* **Dedicated AI Copilot**: Ask questions, brainstorm status ideas, debug TypeScript/React code, and summarize long conversation threads.
-* **Smart Fallback Engine**: Works out-of-the-box with built-in assistant responses or connects to external OpenAI/Groq keys via `AI_API_KEY`.
-
-### 5. Media Viewer & Voice Recorder
-* **Voice Note Recorder**: Live duration counter, pulsing recording indicator, visualizer waveforms, and instant transmission.
-* **Fullscreen Media Viewer**: High-definition image inspection, video playback, and one-click media downloads.
-
-### 6. Search, Analytics & Settings
-* **Universal Search**: Global query engine across contacts, message history, and shared media files.
-* **Interactive Analytics**: Recharts data visualizations showing daily messaging velocity, media storage usage, and payment volumes.
-* **Personalized Settings**: Profile avatar and bio editor, Dark/Light/System themes, and granular privacy controls.
+- 💬 **Zero-Latency Real-Time Chat**: Powered by Socket.IO with typing indicators, delivery checkmarks (Sent, Delivered, Read), inline replies, message reactions, and pin/delete actions.
+- 📞 **Voice & Video Calling (WebRTC)**: End-to-end encrypted voice and video calls with real microphone & camera streaming, PiP preview, live call timer, and mute/video toggle controls.
+- 📷 **WhatsApp-Style Profile Photos**: Click your avatar to upload any photo directly from your PC or phone—no image URLs needed.
+- 📥 **1-Click File & Media Downloads**: Download sent images, videos, audio/voice notes, and document files (PDF, Word, Excel, ZIP) with a single click.
+- 💸 **In-Chat Peer-to-Peer Payments**: Instant wallet transfers, Razorpay/Stripe sandbox integration, official receipts, and ledger tracking.
+- 🎵 **24-Hour Ephemeral Stories with Music**: Soundtracked status updates with interactive progress bars, reactions, and viewer analytics.
+- 🤖 **VibeChat AI Copilot**: Intelligent assistant for brainstorming, debugging, and chat summaries.
 
 ---
 
-## 🛠️ Tech Stack
+## ⚡ Quick Start (Run Locally)
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Lucide Icons |
-| **Animation & Charts** | CSS Transitions, Framer Motion, Recharts |
-| **Backend** | Next.js API Routes, Custom Node HTTP Server, Socket.IO |
-| **Database & ORM** | PostgreSQL, Prisma ORM |
-| **Authentication** | JWT, bcryptjs password hashing, HTTP-Only cookies, Zod validation |
-| **Payments** | Payment Service Abstraction (Razorpay / Stripe / Mock Sandbox) |
-| **Storage** | Cloudinary / AWS S3 storage adapter with Base64/Data-URI fallback |
-
----
-
-## 📁 Project Architecture
-
-```
-VibeChat/
-├── prisma/
-│   ├── schema.prisma       # 30+ production Prisma models
-│   └── seed.ts             # Demo data generator (Alex, Sarah, Rahul, Priya, John)
-├── public/                 # Static assets & icons
-├── src/
-│   ├── app/                # Next.js App Router pages & APIs
-│   │   ├── api/            # REST API endpoints (auth, chat, status, payments, ai, search)
-│   │   ├── chat/           # Real-time chat workspace
-│   │   ├── status/         # 24h music stories dashboard
-│   │   ├── payments/       # Wallet & transaction ledger
-│   │   ├── ai/             # VibeChat AI copilot window
-│   │   ├── analytics/      # Recharts analytics dashboard
-│   │   ├── settings/       # Profile, privacy & theme controls
-│   │   ├── login/          # Auth login + 1-click demo switcher
-│   │   ├── register/       # User registration
-│   │   ├── layout.tsx      # Root layout with Theme, Auth & Socket providers
-│   │   └── page.tsx        # High-converting landing page
-│   ├── components/         # Modular UI components
-│   │   ├── common/         # Avatar, Badge, Modal
-│   │   ├── navigation/     # Sidebar, MobileNav
-│   │   ├── chat/           # ChatWindow, MessageItem, ChatComposer, PaymentCard, VoiceRecorder...
-│   │   ├── status/         # StatusViewer, CreateStatusModal
-│   │   ├── ai/             # AIChatView
-│   │   ├── payments/       # PaymentsDashboard
-│   │   ├── analytics/      # AnalyticsDashboard
-│   │   ├── settings/       # SettingsView
-│   │   ├── notifications/  # NotificationDrawer
-│   │   └── search/         # GlobalSearchModal
-│   ├── context/            # AuthContext, SocketContext, ThemeContext
-│   └── lib/                # Prisma client, auth tokens, payments & AI services
-├── tests/                  # Automated integration and smoke tests
-├── server.ts               # Standalone / Custom Socket.IO real-time server
-├── package.json
-└── README.md
-```
-
----
-
-## ⚡ Quick Start & Local Setup
-
-### 1. Clone & Install Dependencies
+### 1. Install Dependencies
 ```bash
-git clone https://github.com/your-username/vibechat.git
-cd vibechat
 npm install
 ```
 
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-
-For local development, use a PostgreSQL database (Render supplies this automatically in production):
+### 2. Configure Local Environment
+The `.env` file is pre-configured for zero-config local development using SQLite:
 ```env
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public"
+DATABASE_URL="file:./dev.db"
 AUTH_SECRET="vibechat_super_secure_jwt_secret_key_2025_999!"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_SOCKET_URL="http://localhost:3000"
@@ -132,31 +38,22 @@ PORT="3000"
 # Push schema to create database tables
 npm run db:push
 
-# Populate realistic demo users, messages, stories and payments
+# Populate realistic demo users, messages, stories, and stickers
 npm run db:seed
 ```
 
-### 4. Run Automated Smoke Tests
+### 4. Start Development Server
 ```bash
-npm run test
-```
-
-### 5. Launch Development Server
-```bash
-# Next.js development server
 npm run dev
-
-# Or with dedicated Socket.IO server:
-npm run server
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open **[http://localhost:3000](http://localhost:3000)** in your browser!
 
 ---
 
-## 👥 Demo User Accounts (Pre-Seeded)
+## 👥 Demo Accounts (Pre-Seeded)
 
-For instant testing, use the **1-Click Demo Selector** on the `/login` page or log in with password `vibe123456`:
+Use the **1-Click Demo Selector** on `/login` or sign in with password **`vibe123456`**:
 
 | Name | Role | Username | Email |
 |---|---|---|---|
@@ -168,26 +65,92 @@ For instant testing, use the **1-Click Demo Selector** on the `/login` page or l
 
 ---
 
-## 🚀 Deployment Guide
+## 🚀 How to Deploy to GitHub
 
-### Deploying to Vercel (Next.js Application)
-1. Push your repository to **GitHub**.
-2. Connect your repo in the [Vercel Dashboard](https://vercel.com).
-3. Under **Environment Variables**, add:
-   - `DATABASE_URL`: Connection string to PostgreSQL (e.g. Neon, Supabase, or Vercel Postgres).
-   - `AUTH_SECRET`: A secure 32+ character random string.
-   - `NEXT_PUBLIC_APP_URL`: Your production Vercel domain (e.g. `https://vibechat.vercel.app`).
-   - `AI_API_KEY`: *(Optional)* OpenAI or Groq API key.
-4. Set Build Command: `prisma generate && next build`.
-5. Deploy!
+Run these commands in your project root:
 
-### Deploying to Render (Persistent Real-Time Service)
-For continuous WebSocket server support:
-1. In the [Render Dashboard](https://render.com), create a **Web Service**.
-2. Set Environment to **Node**.
-3. Build Command: `npm install && npx prisma generate && npm run build`.
-4. Start Command: `npm run server` or `npx tsx server.ts`.
-5. Under Environment Variables, set `PORT=3000`, `DATABASE_URL`, and `AUTH_SECRET`.
+```bash
+# 1. Initialize git (if not already initialized)
+git init
+
+# 2. Stage all files
+git add .
+
+# 3. Commit your changes
+git commit -m "VibeChat: production-ready social chat & calling platform"
+
+# 4. Set main branch
+git branch -M main
+
+# 5. Link your GitHub repository (replace with your repo URL)
+git remote add origin https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME.git
+
+# 6. Push to GitHub
+git push -u origin main
+```
+
+---
+
+## 🌐 How to Host on Render (1-Click Blueprint)
+
+This project includes a pre-configured **`render.yaml`** blueprint that automatically sets up your Web Service and a free managed PostgreSQL database.
+
+### Method 1: Render Blueprint (Recommended — 2 Minutes)
+
+1. Go to your **[Render Dashboard](https://dashboard.render.com/)**.
+2. In the top-right corner, click **New +** ➔ **Blueprint**.
+3. Select and connect your **GitHub repository**.
+4. Render will read `render.yaml` and auto-configure:
+   - **PostgreSQL Database** (`vibechat-db`) — free managed database
+   - **Web Service** (`vibechat`) — Node.js service running Next.js + Socket.IO
+   - Auto-generated secure `AUTH_SECRET`
+5. Click **Apply**.
+6. Render will build and deploy your application. Once finished, your live URL will be:
+   ```
+   https://vibechat-xxxx.onrender.com
+   ```
+
+---
+
+### Method 2: Manual Web Service Setup on Render
+
+If you prefer setting up manually without blueprints:
+
+1. In the **[Render Dashboard](https://dashboard.render.com/)**, click **New +** ➔ **Web Service**.
+2. Connect your GitHub repository.
+3. Configure the settings:
+   - **Name**: `vibechat`
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm run server`
+   - **Plan**: `Free`
+4. Add **Environment Variables**:
+   | Key | Value | Description |
+   |---|---|---|
+   | `PORT` | `3000` | Port for HTTP and WebSockets |
+   | `AUTH_SECRET` | *(click Generate)* | 32+ character random secret |
+   | `DATABASE_URL` | `postgresql://...` | Connection string to your PostgreSQL DB |
+   | `NODE_ENV` | `production` | Production mode |
+5. Click **Create Web Service**.
+
+> **Note on Database**: The build script (`scripts/prepare-db.js`) automatically detects your database:
+> - When `DATABASE_URL` is PostgreSQL (on Render), it sets `schema.prisma` to PostgreSQL and syncs tables.
+> - When `DATABASE_URL` is SQLite (locally), it sets `schema.prisma` to SQLite.
+> No manual schema changes required!
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Lucide Icons |
+| **Real-Time** | Custom Node.js HTTP Server + Socket.IO (Unified single-port engine) |
+| **Calling** | WebRTC MediaStream API (Voice & Video Calling) |
+| **Database & ORM** | Prisma ORM (Auto-adapts to PostgreSQL on Render / SQLite locally) |
+| **Authentication** | JWT (HTTP-Only cookies), bcryptjs, Zod validation |
+| **Payments** | Payment Service Abstraction (Razorpay / Stripe / Mock Sandbox) |
+| **Media Handling** | Native File API, Base64/Data-URI & Cloudinary storage adapter |
 
 ---
 

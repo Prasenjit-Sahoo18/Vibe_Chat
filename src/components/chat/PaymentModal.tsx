@@ -10,7 +10,7 @@ interface PaymentModalProps {
   onClose: () => void;
   recipient: User | { id: string; name: string; username: string };
   conversationId?: string;
-  onPaymentSuccess?: (payment: any) => void;
+  onPaymentSuccess?: (payment: any, message?: any) => void;
 }
 
 export function PaymentModal({
@@ -57,7 +57,7 @@ export function PaymentModal({
       }
 
       if (onPaymentSuccess) {
-        onPaymentSuccess(data.payment);
+        onPaymentSuccess(data.payment, data.message);
       }
       onClose();
     } catch (err: any) {

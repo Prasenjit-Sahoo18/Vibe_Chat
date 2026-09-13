@@ -30,6 +30,7 @@ interface ChatComposerProps {
   onTyping: (isTyping: boolean) => void;
   replyToMessage?: any | null;
   onCancelReply?: () => void;
+  onPaymentSuccess?: (payment: any, message: any) => void;
 }
 
 export function ChatComposer({
@@ -39,6 +40,7 @@ export function ChatComposer({
   onTyping,
   replyToMessage,
   onCancelReply,
+  onPaymentSuccess,
 }: ChatComposerProps) {
   const [text, setText] = useState("");
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
@@ -281,8 +283,10 @@ export function ChatComposer({
           onClose={() => setShowPaymentModal(false)}
           recipient={recipient}
           conversationId={conversationId}
-          onPaymentSuccess={() => {
-            // refresh
+          onPaymentSuccess={(payment, message) => {
+            if (onPaymentSuccess) {
+              onPaymentSuccess(payment, message);
+            }
           }}
         />
       )}

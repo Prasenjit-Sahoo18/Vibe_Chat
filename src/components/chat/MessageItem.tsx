@@ -18,6 +18,7 @@ import {
   Play,
   Pause,
 } from "lucide-react";
+import { downloadFile } from "@/lib/download";
 
 interface MessageItemProps {
   message: Message;
@@ -204,26 +205,47 @@ export function MessageItem({
           >
             {/* Image attachment */}
             {message.type === "image" && message.attachments?.[0] && (
-              <div className="mb-2 overflow-hidden rounded-xl cursor-pointer">
+              <div className="mb-2 overflow-hidden rounded-xl relative group/img">
                 <img
                   src={message.attachments[0].fileUrl}
                   alt={message.attachments[0].fileName}
                   onClick={() =>
                     onOpenMedia(message.attachments![0].fileUrl, "image", message.attachments![0].fileName)
                   }
-                  className="max-h-60 rounded-xl object-cover hover:scale-105 transition-transform"
+                  className="max-h-60 rounded-xl object-cover hover:scale-105 transition-transform cursor-pointer"
                 />
+                {/* 1-Click Download button */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    downloadFile(message.attachments![0].fileUrl, message.attachments![0].fileName);
+                  }}
+                  title="Download Image"
+                  className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/70 hover:bg-black/90 text-white opacity-0 group-hover/img:opacity-100 transition-opacity shadow-lg backdrop-blur-sm"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
               </div>
             )}
 
             {/* Video attachment */}
             {message.type === "video" && message.attachments?.[0] && (
-              <div className="mb-2 overflow-hidden rounded-xl">
+              <div className="mb-2 overflow-hidden rounded-xl relative group/vid">
                 <video
                   src={message.attachments[0].fileUrl}
                   controls
                   className="max-h-60 rounded-xl"
                 />
+                <button
+                  type="button"
+                  onClick={() => downloadFile(message.attachments![0].fileUrl, message.attachments![0].fileName)}
+                  title="Download Video"
+                  className="mt-1 flex items-center gap-1.5 text-[11px] text-white/80 hover:text-white bg-black/40 hover:bg-black/60 px-2.5 py-1 rounded-lg transition-colors"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Video</span>
+                </button>
               </div>
             )}
 
@@ -246,9 +268,19 @@ export function MessageItem({
 
                   <div className="flex-1 min-w-0">
                     {/* Song / voice note filename */}
-                    <p className="text-xs font-semibold text-white truncate mb-1.5">
-                      {message.attachments[0].fileName || (message.type === "voice" ? "Voice Note" : "Audio Track")}
-                    </p>
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <p className="text-xs font-semibold text-white truncate">
+                        {message.attachments[0].fileName || (message.type === "voice" ? "Voice Note" : "Audio Track")}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => downloadFile(message.attachments![0].fileUrl, message.attachments![0].fileName)}
+                        title="Download Audio"
+                        className="text-white/70 hover:text-white p-0.5 rounded transition-colors flex-shrink-0"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
 
                     {/* Interactive seekable progress bar */}
                     <div
@@ -274,7 +306,7 @@ export function MessageItem({
 
             {/* Document attachment */}
             {message.type === "document" && message.attachments?.[0] && (
-              <div className="flex items-center gap-3 p-2 bg-black/20 rounded-xl mb-1">
+              <div className="flex items-center gap-3 p-2.5 bg-black/25 rounded-xl mb-1 border border-white/10">
                 <FileText className="w-8 h-8 text-amber-400 flex-shrink-0" />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold truncate text-white">{message.attachments[0].fileName}</p>
@@ -282,13 +314,14 @@ export function MessageItem({
                     {Math.round(message.attachments[0].fileSize / 1024)} KB
                   </span>
                 </div>
-                <a
-                  href={message.attachments[0].fileUrl}
-                  download={message.attachments[0].fileName}
-                  className="p-1.5 text-white/80 hover:text-white rounded-lg"
+                <button
+                  type="button"
+                  onClick={() => downloadFile(message.attachments![0].fileUrl, message.attachments![0].fileName)}
+                  title="Download File"
+                  className="p-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
                 >
                   <Download className="w-4 h-4" />
-                </a>
+                </button>
               </div>
             )}
 

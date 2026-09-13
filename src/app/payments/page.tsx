@@ -22,7 +22,7 @@ export default function PaymentsPage() {
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
       <Sidebar />
-      <main className="flex-1 h-full overflow-hidden pb-16 md:pb-0">
+      <main className="flex-1 flex flex-col overflow-hidden pb-16 md:pb-0">
         <PaymentsDashboard />
       </main>
       <MobileNav />

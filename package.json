@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "node scripts/prepare-db.js && next build",
+    "build:render": "node scripts/prepare-db.js && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
@@ -18,7 +19,7 @@
     "upgrade": "npm install -g npm-check-updates && ncu -u && npm install"
   },
 
-  },
+
   "dependencies": {
     "@prisma/client": "^5.20.0",
     "bcryptjs": "^2.4.3",

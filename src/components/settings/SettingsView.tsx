@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import { Avatar } from "../common/Avatar";
@@ -15,6 +15,10 @@ import {
   Moon,
   Sun,
   Laptop,
+  Camera,
+  Upload,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 
 export function SettingsView() {
@@ -29,6 +33,50 @@ export function SettingsView() {
   const [lastSeenPrivacy, setLastSeenPrivacy] = useState("everyone");
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file (PNG, JPG, WEBP, etc.)");
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Failed to upload photo");
+      const data = await res.json();
+      setAvatarUrl(data.fileUrl);
+    } catch (err) {
+      console.error("Photo upload error:", err);
+      // Local preview fallback
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          setAvatarUrl(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setIsUploadingPhoto(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setAvatarUrl("");
+  };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,11 +147,100 @@ export function SettingsView() {
           {/* Profile Tab */}
           {activeTab === "profile" && (
             <form onSubmit={handleSaveProfile} className="space-y-5 max-w-xl">
-              <div className="flex items-center gap-4 pb-4 border-b border-slate-800">
-                <Avatar src={avatarUrl || user?.avatarUrl} name={name || "User"} size="xl" />
-                <div>
-                  <h3 className="text-base font-bold text-white">{name}</h3>
-                  <span className="text-xs text-slate-400">@{user?.username}</span>
+              {/* WhatsApp-style Profile Photo Section */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 pb-6 border-b border-slate-800">
+                {/* Clickable Profile Photo with WhatsApp-style Camera Overlay */}
+                <div
+                  className="relative group cursor-pointer flex-shrink-0"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Click to change profile photo"
+                >
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-indigo-500/50 shadow-xl relative flex items-center justify-center bg-gradient-to-tr from-indigo-600 via-purple-600 to-cyan-500">
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt={name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl font-bold text-white uppercase">
+                        {(name || "V").slice(0, 2)}
+                      </span>
+                    )}
+
+                    {/* WhatsApp-style hover overlay */}
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white gap-1 select-none">
+                      {isUploadingPhoto ? (
+                        <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
+                      ) : (
+                        <>
+                          <Camera className="w-6 h-6 text-white" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-200 text-center leading-tight">
+                            CHANGE<br />PHOTO
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Corner Camera Badge */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      fileInputRef.current?.click();
+                    }}
+                    title="Change Profile Photo"
+                    className="absolute bottom-0 right-0 p-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg border-2 border-slate-900 transition-transform hover:scale-110"
+                  >
+                    {isUploadingPhoto ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Camera className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handlePhotoUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                </div>
+
+                {/* Info and Photo Actions */}
+                <div className="flex-1 text-center sm:text-left space-y-2">
+                  <div className="flex items-center justify-center sm:justify-start gap-2">
+                    <h3 className="text-lg font-bold text-white">{name || "Your Name"}</h3>
+                    <span className="text-xs text-indigo-400 font-medium">@{user?.username}</span>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    Click the photo or use the button below to upload your own picture from your PC or phone.
+                  </p>
+
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploadingPhoto}
+                      className="px-3.5 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 font-semibold rounded-xl text-xs flex items-center gap-1.5 transition-all hover:scale-105 disabled:opacity-50"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{isUploadingPhoto ? "Uploading..." : "Upload New Photo"}</span>
+                    </button>
+
+                    {avatarUrl && (
+                      <button
+                        type="button"
+                        onClick={handleRemovePhoto}
+                        className="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 font-semibold rounded-xl text-xs flex items-center gap-1.5 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Remove Photo</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -115,19 +252,6 @@ export function SettingsView() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
-                  Avatar Image URL
-                </label>
-                <input
-                  type="url"
-                  value={avatarUrl}
-                  onChange={(e) => setAvatarUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
                   className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 focus:outline-none focus:border-indigo-500"
                 />
               </div>

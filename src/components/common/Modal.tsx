@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -18,6 +19,12 @@ export function Modal({
   children,
   maxWidth = "max-w-md",
 }: ModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -32,10 +39,10 @@ export function Modal({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div
         className="fixed inset-0"
         onClick={onClose}
@@ -43,12 +50,13 @@ export function Modal({
       />
 
       <div
-        className={`relative z-10 w-full ${maxWidth} overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl transition-all`}
+        className={`relative z-10 w-full ${maxWidth} flex flex-col rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl max-h-[85vh] overflow-hidden`}
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
+          <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4 flex-shrink-0 bg-slate-900">
             <h3 className="text-lg font-semibold text-white tracking-wide">{title}</h3>
             <button
+              type="button"
               onClick={onClose}
               className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
             >
@@ -57,8 +65,10 @@ export function Modal({
           </div>
         )}
 
-        <div className="p-6">{children}</div>
+        <div className="p-6 overflow-y-auto flex-1">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
+
