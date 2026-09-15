@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "tsx server.ts",
     "build": "node scripts/prepare-db.js && next build",
     "build:render": "node scripts/prepare-db.js && next build",
     "start": "node scripts/prepare-db.js && tsx server.ts",
@@ -15,7 +15,7 @@
     "server": "tsx server.ts",
     "clean": "powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Remove-Item -Recurse -Force .\\\\node_modules; Remove-Item -Recurse -Force .\\\\.next; Remove-Item -Recurse -Force .\\\\prisma\\\\client; npm ci\"",
     "postinstall": "node scripts/prepare-db.js",
-    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
+    "dev:full": "npm run dev",
     "upgrade": "npm install -g npm-check-updates && ncu -u && npm install"
   },
   "dependencies": {

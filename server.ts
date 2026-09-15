@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import next from "next";
+import { parse } from "url";
 import { SOCKET_EVENTS } from "./src/lib/socket/events";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -18,7 +19,8 @@ async function startServer() {
 
   // Create standalone or attached HTTP server for Socket.IO
   const server = createServer((req, res) => {
-    handle(req, res);
+    const parsedUrl = parse(req.url || "", true);
+    handle(req, res, parsedUrl);
   });
 
   const io = new Server(server, {
