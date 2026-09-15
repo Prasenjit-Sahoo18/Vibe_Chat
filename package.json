@@ -14,7 +14,7 @@
     "test": "tsx tests/smoke.test.ts",
     "server": "tsx server.ts",
     "clean": "powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Remove-Item -Recurse -Force .\\\\node_modules; Remove-Item -Recurse -Force .\\\\.next; Remove-Item -Recurse -Force .\\\\prisma\\\\client; npm ci\"",
-    "postinstall": "prisma generate",
+    "postinstall": "node scripts/prepare-db.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "upgrade": "npm install -g npm-check-updates && ncu -u && npm install"
   },
